@@ -43,7 +43,7 @@ jobs:
           cd horeca
           npm install react@18.3.1 react-dom@18.3.1
           npm install
-          npm run build
+          npm run build -- --base=/horeca/
 
       - name: Combine output
         run: |
