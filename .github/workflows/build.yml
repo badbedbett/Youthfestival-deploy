@@ -1,0 +1,56 @@
+name: Build both sites
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout main site
+        uses: actions/checkout@v4
+        with:
+          repository: badbedbett/Youthfestivalmain
+          path: main
+
+      - name: Checkout horeca
+        uses: actions/checkout@v4
+        with:
+          repository: badbedbett/Youthfestivalwebsite
+          path: horeca
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build main
+        run: |
+          cd main
+          npm install react@18.3.1 react-dom@18.3.1
+          npm install
+          npm run build
+
+      - name: Build horeca
+        run: |
+          cd horeca
+          npm install react@18.3.1 react-dom@18.3.1
+          npm install
+          npm run build
+
+      - name: Combine output
+        run: |
+          mkdir -p site
+          cp -r main/dist/* site/
+          mkdir -p site/horeca
+          cp -r horeca/dist/* site/horeca/
+
+      - name: Deploy to branch
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: site
+          branch: deploy
+          clean: true
