@@ -5,12 +5,16 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
+      - name: Checkout deploy repo
+        uses: actions/checkout@v4
+
       - name: Checkout main site
         uses: actions/checkout@v4
         with:
